@@ -16,9 +16,15 @@ class AdditonalInfo extends StatelessWidget {
     return Column(
       spacing: 8,
       children: [
-        Icon(icon, size: 30),
-        Text(label, style: TextStyle(fontSize: 16)),
-        Text(data, style: TextStyle(fontWeight: FontWeight.bold)),
+        Icon(icon, size: 30, color: Colors.blue[500]),
+        Text(label, style: TextStyle(fontSize: 16, color: Colors.blue[500])),
+        Text(
+          data,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.blue[500],
+          ),
+        ),
       ],
     );
   }
