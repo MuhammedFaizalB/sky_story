@@ -18,17 +18,17 @@ class _WeatherScreenState extends State<WeatherScreen> {
   List cityList = [
     'Dubai',
     'Palakkad',
-    'Coimbatore',
     'Thrissur',
     'Kochi',
+    'Kozhikode',
+    'Trivandrum',
+    'Coimbatore',
     'Chennai',
     'Bangalore',
     'Mumbai',
     'Delhi',
-    'Kozhikode',
-    'Trivandrum',
   ];
-  late String cityName = cityList.elementAt(1);
+  late String cityName = cityList.elementAt(0);
   // ignore: prefer_typing_uninitialized_variables
   late var data;
   Future<Map<String, dynamic>> getWeather() async {
