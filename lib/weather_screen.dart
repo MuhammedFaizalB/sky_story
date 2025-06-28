@@ -54,39 +54,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(cityName, style: TextStyle(fontWeight: FontWeight.bold)),
-      //   centerTitle: false,
-      //   actions: [
-      //     Icon(Icons.location_on),
-      //     SizedBox(width: 8),
-      //     DropdownButton(
-      //       menuMaxHeight: 180,
-      //       value: cityName,
-      //       dropdownColor: Colors.blue[400],
-
-      //       style: TextStyle(color: Colors.white, fontSize: 18),
-      //       icon: Icon(Icons.keyboard_arrow_down, color: Colors.white),
-
-      //       onChanged: (value) {
-      //         setState(() {
-      //           cityName = value.toString();
-      //         });
-      //       },
-      //       items:
-      //           cityList.map((e) {
-      //             return DropdownMenuItem(value: e, child: Text(e));
-      //           }).toList(),
-      //     ),
-      //     IconButton(
-      //       onPressed: () {
-      //         setState(() {});
-      //       },
-      //       icon: Icon(Icons.refresh),
-      //     ),
-      //   ],
-      //   actionsPadding: EdgeInsets.all(12),
-      // ),
       body: FutureBuilder(
         future: getWeather(),
         builder: (context, snapshot) {
@@ -219,8 +186,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-
-                          //Icon(color: Colors.white, dataSky(), size: 60),
                           Text(
                             currentSky,
                             style: TextStyle(
