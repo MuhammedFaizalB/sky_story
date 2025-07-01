@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:weather_app/weather_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
 
@@ -12,8 +15,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Weather App',
-      theme: ThemeData.light(useMaterial3: false).copyWith(),
+      title: 'Sky Story',
+      theme: ThemeData.light(useMaterial3: true),
       home: WeatherScreen(),
       debugShowCheckedModeBanner: false,
     );
