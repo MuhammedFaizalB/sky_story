@@ -4,8 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:weather_app/additional_info.dart';
-import 'package:weather_app/hourly_forecast.dart';
+import 'package:weather_app/pages/widgets/additional_info.dart';
+import 'package:weather_app/utils/colors.dart';
+import 'package:weather_app/pages/widgets/hourly_forecast.dart';
 import 'package:weather_app/secret.dart';
 
 class WeatherScreen extends StatefulWidget {
@@ -16,20 +17,7 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  List cityList = [
-    'Dubai',
-    'Palakkad',
-    'Thrissur',
-    'Kochi',
-    'Kozhikode',
-    'Trivandrum',
-    'Coimbatore',
-    'Chennai',
-    'Bangalore',
-    'Mumbai',
-    'Delhi',
-  ];
-  late String cityName = cityList.elementAt(0);
+  String cityName = "Palakkad";
 
   // ignore: prefer_typing_uninitialized_variables
   late var data;
@@ -61,7 +49,23 @@ class _WeatherScreenState extends State<WeatherScreen> {
             return Center(child: Lottie.asset('assets/images/Animation.json'));
           }
           if (snapshot.hasError) {
-            return Center(child: Text("Error Ocurred While Fetching Data"));
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 24,
+              children: [
+                Lottie.asset('assets/images/error.json'),
+                Text("Error Ocurred Try with different Location"),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      cityName = "Palakkad";
+                    });
+                  },
+                  child: Text("Retry"),
+                ),
+              ],
+            );
           }
           if (snapshot.hasData) {
             data = snapshot.data;
@@ -84,8 +88,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
           final maxTemp =
               currentWeatherData['main']['temp_max'] - 273.15.toDouble();
 
-          // final sunRise = DateTime.parse(currentWeatherData['sys']['sunrise'].toString());
-
           dataSky() {
             if (currentSky == 'Sunny') {
               return 'assets/images/Sunny.json';
@@ -103,11 +105,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Color.fromRGBO(135, 206, 235, 1),
-                      Color.fromRGBO(96, 125, 139, 1),
-                      Color.fromRGBO(38, 50, 56, 1),
-                    ],
+                    colors: bgcolor,
                   ),
                 ),
               ),
@@ -125,36 +123,28 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        DropdownButton(
-                          menuMaxHeight: 180,
-                          value: cityName,
-                          dropdownColor: Colors.transparent,
-                          underline: SizedBox(),
+                        Expanded(
+                          child: TextField(
+                            onSubmitted: (val) {
+                              setState(() {
+                                cityName = val;
+                              });
+                            },
 
-                          style: TextStyle(color: Colors.white70, fontSize: 18),
-                          icon: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.white70,
+                            decoration: InputDecoration(
+                              hintText: "Search Location ...",
+                              hintStyle: TextStyle(color: twhite, fontSize: 20),
+                              border: UnderlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
                           ),
-
-                          onChanged: (value) {
-                            setState(() {
-                              cityName = value.toString();
-                            });
-                          },
-                          items:
-                              cityList.map((e) {
-                                return DropdownMenuItem(
-                                  value: e,
-                                  child: Text(e),
-                                );
-                              }).toList(),
                         ),
                         IconButton(
                           onPressed: () {
                             setState(() {});
                           },
-                          icon: Icon(Icons.refresh),
+                          icon: Icon(Icons.refresh, color: twhite),
                         ),
                       ],
                     ),
@@ -174,32 +164,29 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white70,
+                              color: twhite,
                             ),
                           ),
                           Text(
                             "${currentTemp.toStringAsFixed(2)}°",
 
                             style: TextStyle(
-                              color: Colors.white70,
+                              color: twhite,
                               fontSize: 60,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             currentSky,
-                            style: TextStyle(
-                              fontSize: 22,
-                              color: Colors.white70,
-                            ),
+                            style: TextStyle(fontSize: 22, color: twhite),
                           ),
                           Text(
                             DateFormat.jm().format(DateTime.now()),
-                            style: TextStyle(color: Colors.white70),
+                            style: TextStyle(color: twhite),
                           ),
                           Text(
                             DateFormat.MMMMEEEEd().format(DateTime.now()),
-                            style: TextStyle(color: Colors.white70),
+                            style: TextStyle(color: twhite),
                           ),
                         ],
                       ),
@@ -212,32 +199,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey,
+                        color: hwhite,
                       ),
                     ),
                     SizedBox(height: 13),
-                    // SingleChildScrollView(
-                    //   scrollDirection: Axis.horizontal,
-                    //   child: Row(
-                    //     children: [
-                    //       for (var i = 1; i < 39; i++)
-                    //         HourlyForecast(
-                    //           time: data['list'][i]['dt'].toString(),
-                    //           data:
-                    //               data['list'][i]['weather'][0]['main'] ==
-                    //                           'Clouds' ||
-                    //                       data['list'][i]['weather'][0]['main'] ==
-                    //                           'Rain'
-                    //                   ? Icons.cloud
-                    //                   : Icons.sunny,
 
-                    //           temperature:
-                    //               data['list'][i]['main']['temp'] -
-                    //               273.15.toDouble(),
-                    //         ),
-                    //     ],
-                    //   ),
-                    // ),
                     Material(
                       elevation: 2,
                       shadowColor: Colors.lightBlue[100],
@@ -287,7 +253,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey,
+                        color: hwhite,
                       ),
                     ),
                     SizedBox(height: 13),

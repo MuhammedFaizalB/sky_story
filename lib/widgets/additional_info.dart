@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/utils/colors.dart';
 
 class AdditonalInfo extends StatelessWidget {
   final IconData icon;
@@ -17,12 +18,9 @@ class AdditonalInfo extends StatelessWidget {
     return Column(
       spacing: 8,
       children: [
-        Icon(icon, size: 30, color: Colors.white),
-        Text(label, style: TextStyle(fontSize: 16, color: Colors.white)),
-        Text(
-          val,
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
+        Icon(icon, size: 30, color: twhite),
+        Text(label, style: TextStyle(fontSize: 16, color: twhite)),
+        Text(val, style: TextStyle(fontWeight: FontWeight.bold, color: twhite)),
       ],
     );
   }

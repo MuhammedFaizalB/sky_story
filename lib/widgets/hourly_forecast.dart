@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/utils/colors.dart';
 
 class HourlyForecast extends StatelessWidget {
   final String time;
@@ -28,11 +29,11 @@ class HourlyForecast extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: twhite,
             ),
           ),
-          Icon(icon, color: Colors.white),
-          Text("$temp °C", style: TextStyle(fontSize: 16, color: Colors.white)),
+          Icon(icon, color: twhite),
+          Text("$temp °C", style: TextStyle(fontSize: 16, color: twhite)),
         ],
       ),
     );
