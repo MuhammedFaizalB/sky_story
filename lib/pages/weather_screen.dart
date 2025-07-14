@@ -54,8 +54,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 24,
               children: [
-                Lottie.asset('assets/images/error.json'),
-                Text("Error Ocurred Try with different Location"),
+                const SizedBox(width: double.infinity),
+                Lottie.asset('assets/images/Location.json'),
+                const Text(
+                  "Location not found. Please try a different location.",
+                ),
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
@@ -132,6 +135,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             },
 
                             decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.search_outlined,
+                                color: twhite,
+                              ),
                               hintText: "Search Location ...",
                               hintStyle: TextStyle(color: twhite, fontSize: 20),
                               border: UnderlineInputBorder(
