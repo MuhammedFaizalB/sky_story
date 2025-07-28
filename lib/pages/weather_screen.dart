@@ -42,6 +42,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: FutureBuilder(
         future: getWeather(),
         builder: (context, snapshot) {
@@ -55,7 +56,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
               spacing: 24,
               children: [
                 const SizedBox(width: double.infinity),
-                Lottie.asset('assets/images/Location.json'),
+                SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: Lottie.asset('assets/images/Location.json'),
+                ),
                 const Text(
                   "Location not found. Please try a different location.",
                 ),
@@ -103,228 +108,214 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
           return Stack(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: bgcolor,
-                  ),
-                ),
-              ),
               Lottie.asset(
                 dataSky(),
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,
               ),
 
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            onSubmitted: (val) {
-                              setState(() {
-                                cityName = val;
-                              });
-                            },
-
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.search_outlined,
-                                color: twhite,
-                              ),
-                              hintText: "Search Location ...",
-                              hintStyle: TextStyle(color: twhite, fontSize: 20),
-                              border: UnderlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
+              ListView(
+                shrinkWrap: true,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          onSubmitted: (val) {
+                            setState(() {
+                              cityName = val;
+                            });
+                          },
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.search_outlined,
+                              color: twhite,
+                            ),
+                            hintText: "Search Location ...",
+                            hintStyle: TextStyle(color: twhite, fontSize: 20),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {});
-                          },
-                          icon: Icon(Icons.refresh, color: twhite),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {});
+                        },
+                        icon: Icon(Icons.refresh, color: twhite),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 13),
+
+                  //Mian card
+                  Container(
+                    color: Colors.transparent,
+                    width: double.infinity,
+                    padding: EdgeInsets.all(14),
+
+                    child: Column(
+                      spacing: 8,
+                      children: [
+                        Text(
+                          cityName,
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: twhite,
+                          ),
+                        ),
+                        Text(
+                          "${currentTemp.toStringAsFixed(2)}°",
+
+                          style: TextStyle(
+                            color: twhite,
+                            fontSize: 60,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          currentSky,
+                          style: TextStyle(fontSize: 22, color: twhite),
+                        ),
+                        Text(
+                          DateFormat.jm().format(DateTime.now()),
+                          style: TextStyle(color: twhite),
+                        ),
+                        Text(
+                          DateFormat.MMMMEEEEd().format(DateTime.now()),
+                          style: TextStyle(color: twhite),
                         ),
                       ],
                     ),
-                    SizedBox(height: 13),
+                  ),
+                  SizedBox(height: 13),
 
-                    //Mian card
-                    Container(
-                      color: Colors.transparent,
-                      width: double.infinity,
-                      padding: EdgeInsets.all(14),
+                  //Weather forecast
+                  Text(
+                    "Hourly Forecaser",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: hwhite,
+                    ),
+                  ),
+                  SizedBox(height: 13),
 
+                  Material(
+                    elevation: 2,
+                    shadowColor: Colors.lightBlue[100],
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(20),
+                    child: SizedBox(
+                      height: 130,
+
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 35,
+                        itemBuilder: (context, index) {
+                          final forecastTime = DateTime.parse(
+                            data['list'][index + 1]['dt_txt'],
+                          );
+
+                          final forecastSky =
+                              data['list'][index + 1]['weather'][0]['main'];
+
+                          forcastSky() {
+                            if (forecastSky == 'Sunny') {
+                              return Icons.sunny;
+                            } else if (forecastSky == 'Rain') {
+                              return Icons.cloudy_snowing;
+                            } else {
+                              return Icons.cloud;
+                            }
+                          }
+
+                          final forecastTemp =
+                              data['list'][index + 1]['main']['temp'] -
+                              273.15.toDouble();
+
+                          return HourlyForecast(
+                            time: DateFormat.jm().format(forecastTime),
+                            icon: forcastSky(),
+                            temperature: forecastTemp,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 13),
+                  Text(
+                    "Additional Information",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: hwhite,
+                    ),
+                  ),
+                  SizedBox(height: 13),
+                  Material(
+                    elevation: 2,
+
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(20),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
                       child: Column(
-                        spacing: 8,
+                        spacing: 22,
                         children: [
-                          Text(
-                            cityName,
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: twhite,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              AdditonalInfo(
+                                icon: Icons.water_rounded,
+                                label: "Humidity",
+                                data: currentHumidity,
+                              ),
+                              AdditonalInfo(
+                                icon: Icons.air,
+                                label: "Wind Speed",
+                                data: currentWindSpeed,
+                              ),
+                            ],
                           ),
-                          Text(
-                            "${currentTemp.toStringAsFixed(2)}°",
-
-                            style: TextStyle(
-                              color: twhite,
-                              fontSize: 60,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              AdditonalInfo(
+                                icon: Icons.wind_power,
+                                label: "Pressure",
+                                data: currentPressure,
+                              ),
+                              AdditonalInfo(
+                                icon: Icons.thermostat_sharp,
+                                label: "Feel Like",
+                                data: feelLike,
+                              ),
+                            ],
                           ),
-                          Text(
-                            currentSky,
-                            style: TextStyle(fontSize: 22, color: twhite),
-                          ),
-                          Text(
-                            DateFormat.jm().format(DateTime.now()),
-                            style: TextStyle(color: twhite),
-                          ),
-                          Text(
-                            DateFormat.MMMMEEEEd().format(DateTime.now()),
-                            style: TextStyle(color: twhite),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              AdditonalInfo(
+                                icon: Icons.arrow_downward_outlined,
+                                label: "Mini Temp",
+                                data: minTemp,
+                              ),
+                              AdditonalInfo(
+                                icon: Icons.arrow_upward_outlined,
+                                label: "Maxi Temp",
+                                data: maxTemp,
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 13),
-
-                    //Weather forecast
-                    Text(
-                      "Hourly Forecaser",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: hwhite,
-                      ),
-                    ),
-                    SizedBox(height: 13),
-
-                    Material(
-                      elevation: 2,
-                      shadowColor: Colors.lightBlue[100],
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(20),
-                      child: SizedBox(
-                        height: 130,
-
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 35,
-                          itemBuilder: (context, index) {
-                            final forecastTime = DateTime.parse(
-                              data['list'][index + 1]['dt_txt'],
-                            );
-
-                            final forecastSky =
-                                data['list'][index + 1]['weather'][0]['main'];
-
-                            forcastSky() {
-                              if (forecastSky == 'Clear' ||
-                                  forecastSky == 'Sunny') {
-                                return Icons.sunny;
-                              } else if (forecastSky == 'Rain') {
-                                return Icons.cloudy_snowing;
-                              } else {
-                                return Icons.cloud;
-                              }
-                            }
-
-                            final forecastTemp =
-                                data['list'][index + 1]['main']['temp'] -
-                                273.15.toDouble();
-
-                            return HourlyForecast(
-                              time: DateFormat.jm().format(forecastTime),
-                              icon: forcastSky(),
-                              temperature: forecastTemp,
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 13),
-                    Text(
-                      "Additional Information",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: hwhite,
-                      ),
-                    ),
-                    SizedBox(height: 13),
-                    Material(
-                      elevation: 2,
-
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(20),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          spacing: 22,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                AdditonalInfo(
-                                  icon: Icons.water_rounded,
-                                  label: "Humidity",
-                                  data: currentHumidity,
-                                ),
-                                AdditonalInfo(
-                                  icon: Icons.air,
-                                  label: "Wind Speed",
-                                  data: currentWindSpeed,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                AdditonalInfo(
-                                  icon: Icons.wind_power,
-                                  label: "Pressure",
-                                  data: currentPressure,
-                                ),
-                                AdditonalInfo(
-                                  icon: Icons.thermostat_sharp,
-                                  label: "Feel Like",
-                                  data: feelLike,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                AdditonalInfo(
-                                  icon: Icons.arrow_downward_outlined,
-                                  label: "Mini Temp",
-                                  data: minTemp,
-                                ),
-                                AdditonalInfo(
-                                  icon: Icons.arrow_upward_outlined,
-                                  label: "Maxi Temp",
-                                  data: maxTemp,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:weather_app/pages/weather_screen.dart';
+import 'package:weather_app/pages/responsive_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sky Story',
       theme: ThemeData.dark(useMaterial3: true),
-      home: WeatherScreen(),
+      home: Responsive(),
       debugShowCheckedModeBanner: false,
     );
   }
