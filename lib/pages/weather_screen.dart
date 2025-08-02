@@ -101,6 +101,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
               return 'assets/images/Sunny.json';
             } else if (currentSky == 'Rain') {
               return 'assets/images/Rain.json';
+            } else if (currentSky == 'Clear') {
+              return 'assets/images/clear_cloud.json';
             } else {
               return 'assets/images/Clouds.json';
             }

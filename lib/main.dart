@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sky Story',
-      theme: ThemeData.dark(useMaterial3: true),
+      theme: ThemeData(brightness: Brightness.dark),
       home: Responsive(),
       debugShowCheckedModeBanner: false,
     );
