@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:weather_app/pages/responsive_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/bloc/weather_bloc.dart';
+import 'package:weather_app/presentation/responsive_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,11 +15,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sky Story',
-      theme: ThemeData(brightness: Brightness.dark),
-      home: Responsive(),
-      debugShowCheckedModeBanner: false,
+    return BlocProvider(
+      create: (context) => WeatherBloc(),
+      child: MaterialApp(
+        title: 'Sky Story',
+        theme: ThemeData(brightness: Brightness.dark),
+        home: Responsive(),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

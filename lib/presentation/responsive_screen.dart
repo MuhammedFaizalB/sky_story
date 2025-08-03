@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/pages/weather_screen.dart';
+import 'package:weather_app/presentation/weather_screen.dart';
 import 'package:weather_app/utils/colors.dart';
 
 class Responsive extends StatelessWidget {

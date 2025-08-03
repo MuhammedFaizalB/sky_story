@@ -1,55 +1,30 @@
-import 'dart:convert';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:weather_app/pages/widgets/additional_info.dart';
+import 'package:weather_app/bloc/weather_bloc.dart';
+import 'package:weather_app/presentation/widgets/additional_info.dart';
+import 'package:weather_app/presentation/widgets/hourly_forecast.dart';
 import 'package:weather_app/utils/colors.dart';
-import 'package:weather_app/pages/widgets/hourly_forecast.dart';
-import 'package:weather_app/secret.dart';
 
-class WeatherScreen extends StatefulWidget {
-  const WeatherScreen({super.key});
+// ignore: must_be_immutable
+class WeatherScreen extends StatelessWidget {
+  WeatherScreen({super.key});
 
-  @override
-  State<WeatherScreen> createState() => _WeatherScreenState();
-}
-
-class _WeatherScreenState extends State<WeatherScreen> {
   String cityName = "Palakkad";
-
-  // ignore: prefer_typing_uninitialized_variables
-  late var data;
-  Future<Map<String, dynamic>> getWeather() async {
-    try {
-      final result = await http.get(
-        Uri.parse(
-          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&APPID=$weatherAPIKey',
-        ),
-      );
-      final data = jsonDecode(result.body);
-
-      if (data['cod'] != '200') {
-        throw 'Un expected Error Occured';
-      }
-      return data;
-    } catch (e) {
-      throw 'Error Occured';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    context.read<WeatherBloc>().add(WeatherFetched(cityName: cityName));
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: FutureBuilder(
-        future: getWeather(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: BlocBuilder<WeatherBloc, WeatherState>(
+        builder: (context, state) {
+          if (state is WeatherLoading) {
             return Center(child: Lottie.asset('assets/images/Animation.json'));
           }
-          if (snapshot.hasError) {
+          if (state is! WeatherSuccess) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,35 +41,28 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    setState(() {
-                      cityName = "Palakkad";
-                    });
+                    cityName = "Palakkad";
+                    context.read<WeatherBloc>().add(
+                      WeatherFetched(cityName: cityName),
+                    );
                   },
                   child: Text("Retry"),
                 ),
               ],
             );
           }
-          if (snapshot.hasData) {
-            data = snapshot.data;
-          }
 
-          final currentWeatherData = data['list'][0];
+          final data = state.weatherModel;
 
-          final currentTemp = currentWeatherData['main']['temp'] - 273.15;
-          final currentSky = currentWeatherData['weather'][0]['main'];
-          final currentHumidity =
-              currentWeatherData['main']['humidity'] - 0.toDouble();
-          final currentWindSpeed =
-              currentWeatherData['wind']['speed'] - 0.toDouble();
-          final currentPressure =
-              currentWeatherData['main']['pressure'] - 0.toDouble();
-          final feelLike =
-              currentWeatherData['main']['feels_like'] - 273.15.toDouble();
-          final minTemp =
-              currentWeatherData['main']['temp_min'] - 273.15.toDouble();
-          final maxTemp =
-              currentWeatherData['main']['temp_max'] - 273.15.toDouble();
+          final currentTemp = data.currentTemp;
+          final currentSky = data.currentSky;
+          final currentHumidity = data.currentHumidity;
+          final currentWindSpeed = data.currentWindSpeed;
+          final currentPressure = data.currentPressure;
+          final feelLike = data.feelLike;
+          final minTemp = data.minTemp;
+          final maxTemp = data.maxtemp;
+          final forecast = data.hourlyForecast;
 
           dataSky() {
             if (currentSky == 'Sunny') {
@@ -125,9 +93,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       Expanded(
                         child: TextField(
                           onSubmitted: (val) {
-                            setState(() {
-                              cityName = val;
-                            });
+                            cityName = val;
+                            context.read<WeatherBloc>().add(
+                              WeatherFetched(cityName: cityName),
+                            );
                           },
                           decoration: InputDecoration(
                             prefixIcon: Icon(
@@ -144,7 +113,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       ),
                       IconButton(
                         onPressed: () {
-                          setState(() {});
+                          context.read<WeatherBloc>().add(
+                            WeatherFetched(cityName: cityName),
+                          );
                         },
                         icon: Icon(Icons.refresh, color: twhite),
                       ),
@@ -213,17 +184,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     borderRadius: BorderRadius.circular(20),
                     child: SizedBox(
                       height: 130,
-
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: 35,
                         itemBuilder: (context, index) {
                           final forecastTime = DateTime.parse(
-                            data['list'][index + 1]['dt_txt'],
+                            forecast[index + 1].dateTime.toString(),
                           );
 
-                          final forecastSky =
-                              data['list'][index + 1]['weather'][0]['main'];
+                          final forecastSky = forecast[index + 1].forecastSky;
 
                           forcastSky() {
                             if (forecastSky == 'Sunny') {
@@ -235,9 +204,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             }
                           }
 
-                          final forecastTemp =
-                              data['list'][index + 1]['main']['temp'] -
-                              273.15.toDouble();
+                          final forecastTemp = forecast[index + 1].forecastTemp;
 
                           return HourlyForecast(
                             time: DateFormat.jm().format(forecastTime),
