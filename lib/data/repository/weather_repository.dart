@@ -12,6 +12,7 @@ class WeatherRepository {
       if (data['cod'] != '200') {
         throw 'Un expected Error Occured';
       }
+
       return WeatherModel.fromMap(data);
     } catch (e) {
       throw 'Error Occured';

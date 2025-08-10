@@ -9,6 +9,7 @@ class WeatherModel {
   final double feelLike;
   final double minTemp;
   final double maxtemp;
+  final String locationName;
   final List<HourlyForecastModel> hourlyForecast;
 
   WeatherModel({
@@ -21,10 +22,12 @@ class WeatherModel {
     required this.minTemp,
     required this.maxtemp,
     required this.hourlyForecast,
+    required this.locationName,
   });
 
   factory WeatherModel.fromMap(Map<String, dynamic> map) {
     final currentWeatherData = map['list'][0];
+    final String locationName = map['city']['name'];
     final List<dynamic> forecastJsonList = map['list'];
 
     final forecastList =
@@ -42,6 +45,7 @@ class WeatherModel {
       minTemp: currentWeatherData['main']['temp_min'] - 273.15.toDouble(),
       maxtemp: currentWeatherData['main']['temp_max'] - 273.15.toDouble(),
       hourlyForecast: forecastList,
+      locationName: locationName,
     );
   }
 }

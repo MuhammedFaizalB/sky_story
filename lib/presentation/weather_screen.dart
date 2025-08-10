@@ -53,7 +53,7 @@ class WeatherScreen extends StatelessWidget {
           }
 
           final data = state.weatherModel;
-
+          final locationName = data.locationName;
           final currentTemp = data.currentTemp;
           final currentSky = data.currentSky;
           final currentHumidity = data.currentHumidity;
@@ -133,7 +133,7 @@ class WeatherScreen extends StatelessWidget {
                       spacing: 8,
                       children: [
                         Text(
-                          cityName,
+                          locationName,
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -235,6 +235,21 @@ class WeatherScreen extends StatelessWidget {
                       child: Column(
                         spacing: 22,
                         children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              AdditonalInfo(
+                                icon: Icons.upcoming_outlined,
+                                label: "SunRise",
+                                data: currentHumidity,
+                              ),
+                              AdditonalInfo(
+                                icon: Icons.upcoming_rounded,
+                                label: "SunSet",
+                                data: currentWindSpeed,
+                              ),
+                            ],
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
