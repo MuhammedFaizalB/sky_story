@@ -11,6 +11,8 @@ class WeatherModel {
   final double maxtemp;
   final String locationName;
   final List<HourlyForecastModel> hourlyForecast;
+  final DateTime sunrise;
+  final DateTime sunset;
 
   WeatherModel({
     required this.currentTemp,
@@ -23,11 +25,19 @@ class WeatherModel {
     required this.maxtemp,
     required this.hourlyForecast,
     required this.locationName,
+    required this.sunrise,
+    required this.sunset,
   });
 
   factory WeatherModel.fromMap(Map<String, dynamic> map) {
     final currentWeatherData = map['list'][0];
     final String locationName = map['city']['name'];
+    final sunrise = DateTime.fromMillisecondsSinceEpoch(
+      map['city']['sunrise'] * 1000,
+    );
+    final sunset = DateTime.fromMillisecondsSinceEpoch(
+      map['city']['sunset'] * 1000,
+    );
     final List<dynamic> forecastJsonList = map['list'];
 
     final forecastList =
@@ -46,6 +56,8 @@ class WeatherModel {
       maxtemp: currentWeatherData['main']['temp_max'] - 273.15.toDouble(),
       hourlyForecast: forecastList,
       locationName: locationName,
+      sunrise: sunrise,
+      sunset: sunset,
     );
   }
 }

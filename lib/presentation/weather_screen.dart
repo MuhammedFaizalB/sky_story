@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:weather_app/bloc/weather_bloc.dart';
 import 'package:weather_app/presentation/widgets/additional_info.dart';
+import 'package:weather_app/presentation/widgets/additional_info_sun.dart';
 import 'package:weather_app/presentation/widgets/hourly_forecast.dart';
 import 'package:weather_app/utils/colors.dart';
 
@@ -63,6 +64,8 @@ class WeatherScreen extends StatelessWidget {
           final minTemp = data.minTemp;
           final maxTemp = data.maxtemp;
           final forecast = data.hourlyForecast;
+          final sunrise = DateFormat('hh:mm a').format(data.sunrise);
+          final sunset = DateFormat('hh:mm a').format(data.sunset);
 
           dataSky() {
             if (currentSky == 'Sunny') {
@@ -216,6 +219,8 @@ class WeatherScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 13),
+
+                  // Additonal Information
                   Text(
                     "Additional Information",
                     style: TextStyle(
@@ -235,21 +240,6 @@ class WeatherScreen extends StatelessWidget {
                       child: Column(
                         spacing: 22,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              AdditonalInfo(
-                                icon: Icons.upcoming_outlined,
-                                label: "SunRise",
-                                data: currentHumidity,
-                              ),
-                              AdditonalInfo(
-                                icon: Icons.upcoming_rounded,
-                                label: "SunSet",
-                                data: currentWindSpeed,
-                              ),
-                            ],
-                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -292,6 +282,21 @@ class WeatherScreen extends StatelessWidget {
                                 icon: Icons.arrow_upward_outlined,
                                 label: "Maxi Temp",
                                 data: maxTemp,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              AdditionalInfoSun(
+                                icon: Icons.upcoming_outlined,
+                                label: 'Sun Rise',
+                                data: sunrise,
+                              ),
+                              AdditionalInfoSun(
+                                icon: Icons.upcoming_rounded,
+                                label: "Sun Set",
+                                data: sunset,
                               ),
                             ],
                           ),
