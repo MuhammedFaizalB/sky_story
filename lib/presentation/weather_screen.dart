@@ -17,7 +17,7 @@ class WeatherScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<WeatherBloc>().add(WeatherFetched(cityName: cityName));
+    context.read<WeatherBloc>().add(LiveWeatherFetched());
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: BlocBuilder<WeatherBloc, WeatherState>(
@@ -25,7 +25,35 @@ class WeatherScreen extends StatelessWidget {
           if (state is WeatherLoading) {
             return Center(child: Lottie.asset('assets/images/Animation.json'));
           }
+
           if (state is! WeatherSuccess) {
+            if (state is LiveWeatherFailure) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 24,
+                children: [
+                  const SizedBox(width: double.infinity),
+                  SizedBox(
+                    width: 200,
+                    height: 200,
+                    child: Lottie.asset('assets/images/Location.json'),
+                  ),
+                  const Text(
+                    "Location Permission Denied You need to give Location Permission to get Live location data",
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      cityName = "Palakkad";
+                      context.read<WeatherBloc>().add(
+                        WeatherFetched(cityName: cityName),
+                      );
+                    },
+                    child: Text("Try with Location Name"),
+                  ),
+                ],
+              );
+            }
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,10 +70,7 @@ class WeatherScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    cityName = "Palakkad";
-                    context.read<WeatherBloc>().add(
-                      WeatherFetched(cityName: cityName),
-                    );
+                    context.read<WeatherBloc>().add(LiveWeatherFetched());
                   },
                   child: Text("Retry"),
                 ),
@@ -96,7 +121,7 @@ class WeatherScreen extends StatelessWidget {
                       Expanded(
                         child: TextField(
                           onSubmitted: (val) {
-                            cityName = val;
+                            cityName = val.trim();
                             context.read<WeatherBloc>().add(
                               WeatherFetched(cityName: cityName),
                             );
@@ -113,6 +138,12 @@ class WeatherScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          context.read<WeatherBloc>().add(LiveWeatherFetched());
+                        },
+                        icon: Icon(Icons.location_on_outlined, color: twhite),
                       ),
                       IconButton(
                         onPressed: () {

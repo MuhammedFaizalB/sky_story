@@ -8,3 +8,5 @@ final class WeatherFetched extends WeatherEvent {
 
   WeatherFetched({required this.cityName});
 }
+
+final class LiveWeatherFetched extends WeatherEvent {}

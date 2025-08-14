@@ -14,3 +14,5 @@ final class WeatherSuccess extends WeatherState {
 final class WeatherFailure extends WeatherState {}
 
 final class WeatherLoading extends WeatherState {}
+
+final class LiveWeatherFailure extends WeatherFailure {}
